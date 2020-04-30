@@ -1,5 +1,6 @@
 package mV2IL.LAN;
 
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Observer;
@@ -16,18 +17,23 @@ public class ControllerLAN {
 	private String adressLAN = "127.0.0.1";
 	private Socket socket = null;
 
-	public void openConnection(Observer obs) throws IOException {
+	public void openConnection(PropertyChangeListener pcl) throws IOException {
 		if (!isConnected() && setAdressLAN(adressLAN)) {
-			openConnection(new Socket(adressLAN, 6060), obs);
+			openConnection(new Socket(adressLAN, 6060), pcl);
 		}
 	}
 	
-	public void openConnection(Socket socket, Observer obs) {
+	public void openConnection(String adress, PropertyChangeListener pcl) throws IOException {
+		setAdressLAN(adress);
+		openConnection(pcl);
+	}
+	
+	public void openConnection(Socket socket, PropertyChangeListener pcl) {
 		try {
 			this.socket = socket;
 			outputController = new OutputController(socket.getOutputStream());
 			inputController = new InputControllerLAN(socket.getInputStream());
-			inputController.addObserver(obs);
+			inputController.addPropertyChangeListener(pcl);
 
 			Thread output = new Thread(outputController);
 			Thread input = new Thread(inputController);
@@ -37,12 +43,7 @@ public class ControllerLAN {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-
-	public void openConnection(String adress, Observer obs) throws IOException {
-		setAdressLAN(adress);
-		openConnection(obs);
-	}
+	}	
 
 	public String getAdressLAN() {
 		return adressLAN;
@@ -66,7 +67,6 @@ public class ControllerLAN {
 
 	public boolean isConnected() {
 		return socket != null;
-
 	}
 
 	public void close() throws IOException {

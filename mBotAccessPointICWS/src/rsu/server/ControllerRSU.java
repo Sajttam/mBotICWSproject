@@ -1,5 +1,7 @@
 package rsu.server;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -24,7 +26,7 @@ import rsu.algorithms.AlgorithmICWS;
 import rsu.algorithms.QueueAlg;
 import rsu.algorithms.TrafficLightAlg;
 
-public class ControllerRSU implements Observer, Runnable {
+public class ControllerRSU implements PropertyChangeListener, Runnable {
 	private ServerSocket serverSocket = null;
 	private static final int SERVER_PORT = 6060;
 	private Map<InputController, ControllerLAN> connections = null;
@@ -39,9 +41,19 @@ public class ControllerRSU implements Observer, Runnable {
 			connections = new HashMap<InputController, ControllerLAN>();
 			isRunning = true;
 			algorithmICWS = new QueueAlg();
-			
+
 			CommunicationTimer comTime = new CommunicationTimer();
-			comTime.addObserver(this);
+			comTime.addPropertyChangeListener(e -> {
+				for (ControllerLAN cl : connections.values()) {
+					CarInIntersection cii = CarInIntersection.getCarInIntersection(cl);
+
+					if (cii != null) {
+						boolean drive = algorithmICWS.isVehicleAllowedToDrive(cii);
+						cl.sendMessage(new MessageRSUdriving(drive));
+					}
+				}
+			});
+
 			Thread comTimeThread = new Thread(comTime);
 			comTimeThread.start();
 
@@ -62,8 +74,6 @@ public class ControllerRSU implements Observer, Runnable {
 			System.exit(0);
 		}
 	}
-	
-	
 
 	public AlgorithmICWS getAlgorithmICWS() {
 		return algorithmICWS;
@@ -71,38 +81,6 @@ public class ControllerRSU implements Observer, Runnable {
 
 	public void setAlgorithmICWS(AlgorithmICWS algorithmICWS) {
 		this.algorithmICWS = algorithmICWS;
-	}
-
-	public void handleJsonFromLAN(MessageWithOrigin msgOrigin) {
-		JsonObject jObj = msgOrigin.message;
-		GsonBuilder builder = new GsonBuilder();
-		builder.setVersion(1.0);
-		Gson gson = builder.create();
-		MessageServer msgServer = gson.fromJson(jObj.toString(), MessageServer.class);
-		ControllerLAN cl = connections.get(msgOrigin.origin);
-		CarInIntersection.updateInfo(msgServer, cl);
-	}
-
-	@Override
-	public void update(Observable arg0, Object arg1) {
-		if (arg1 instanceof MessageWithOrigin) {
-			MessageWithOrigin msg = (MessageWithOrigin) arg1;
-			for (ControllerLAN c : connections.values()) {
-				if (c.getInputController().equals(msg.origin)) {
-					handleJsonFromLAN(msg);
-					break;
-				}
-			}
-		} else if (arg0 instanceof CommunicationTimer) {
-			for (ControllerLAN cl : connections.values()) {
-				CarInIntersection cii = CarInIntersection.getCarInIntersection(cl);
-
-				if (cii != null) {
-					boolean drive = algorithmICWS.isVehicleAllowedToDrive(cii);
-					cl.sendMessage(new MessageRSUdriving(drive));
-				}
-			}
-		}
 	}
 
 	@Override
@@ -117,6 +95,28 @@ public class ControllerRSU implements Observer, Runnable {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	public void handleJsonFromLAN(MessageWithOrigin msgOrigin) {
+		JsonObject jObj = msgOrigin.message;
+		GsonBuilder builder = new GsonBuilder();
+		builder.setVersion(1.0);
+		Gson gson = builder.create();
+		MessageServer msgServer = gson.fromJson(jObj.toString(), MessageServer.class);
+		ControllerLAN cl = connections.get(msgOrigin.origin);
+		CarInIntersection.updateInfo(msgServer, cl);
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		MessageWithOrigin msg = (MessageWithOrigin) evt.getNewValue();
+		for (ControllerLAN c : connections.values()) {
+			//TODO: is this really correct???
+			if (c.getInputController().equals(msg.origin)) {
+				handleJsonFromLAN(msg);
+				break;
+			}
 		}
 	}
 }

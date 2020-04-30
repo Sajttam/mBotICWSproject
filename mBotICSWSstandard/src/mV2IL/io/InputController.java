@@ -1,4 +1,6 @@
 package mV2IL.io;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
@@ -9,10 +11,11 @@ import com.google.gson.JsonParser;
 
 import mV2IL.messages.MessageWithOrigin;
 
-public abstract class InputController extends Observable implements Runnable {
+public abstract class InputController implements Runnable {
 	protected InputStream inputStream;
 	protected StringBuilder stringBuilder;
 	protected boolean isRunning = true;
+	protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
 	protected InputController(InputStream inputStream) {
 		this.inputStream = inputStream;
@@ -23,29 +26,44 @@ public abstract class InputController extends Observable implements Runnable {
 		isRunning  = false;
 	}
 	
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		this.pcs.addPropertyChangeListener(listener);
+	}
+
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		this.pcs.removePropertyChangeListener(listener);
+	}
+	
 	public boolean equals(Object other) {
 		return super.equals(other);
+	}
+	
+	protected MessageWithOrigin getMsgFromJSON(String json) {
+		MessageWithOrigin msg = new MessageWithOrigin();
+		
+		JsonParser p = new JsonParser();
+		msg = new MessageWithOrigin();
+		msg.origin = this;
+		msg.message = p.parse(json).getAsJsonObject();		
+		
+		return msg;
+		
 	}
 
 	@Override
 	public void run() {
 		try {
+			MessageWithOrigin oldMsg = null;
+			MessageWithOrigin msg = null;
 			while (isRunning) {
 				if (inputStream.available() > 0) {
 					int apa = inputStream.read();
-					if (apa == '}') {
-						
+					if (apa == '}') {						
 						stringBuilder.append((char)apa);
-						//System.out.println("mBot says: " + stringBuilder.toString());
-						
-						JsonParser p = new JsonParser();
-						
-						MessageWithOrigin msg = new MessageWithOrigin();
-						msg.origin = this;
-						msg.message = p.parse(stringBuilder.toString()).getAsJsonObject();
-						
-						setChanged();
-						notifyObservers(msg);
+										
+						oldMsg = msg;	
+						msg = getMsgFromJSON(stringBuilder.toString());
+						pcs.firePropertyChange("NewMsg", oldMsg, msg);
 						
 						stringBuilder = new StringBuilder();
 					} else {

@@ -1,5 +1,6 @@
 package mV2IL.io;
 
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.Observer;
 import java.util.concurrent.Semaphore;
@@ -41,13 +42,13 @@ public class BluetoothController {
 		}
 	}
 
-	public void openConnection(Observer obs) throws IOException {
+	public void openConnection(PropertyChangeListener pcl) throws IOException {
 		if (!isConnected() && setAdressBT(adressBT)) {
 			streamConnection = (StreamConnection) Connector.open(adressBT);
 
 			outputController = new OutputController(streamConnection.openOutputStream());
 			inputController = new InputControllerBT(streamConnection.openInputStream(), connectionConfirmed);
-			inputController.addObserver(obs);
+			inputController.addPropertyChangeListener(pcl);
 
 			Thread output = new Thread(outputController);
 			Thread input = new Thread(inputController);
@@ -55,14 +56,14 @@ public class BluetoothController {
 			input.start();
 		}
 	}
+	
+	public void openConnection(String adress, PropertyChangeListener pcl) throws IOException {
+		setAdressBT(adress);
+		openConnection(pcl);
+	}
 
 	public InputController getInputController() {
 		return inputController;
-	}
-
-	public void openConnection(String adress, Observer obs) throws IOException {
-		setAdressBT(adress);
-		openConnection(obs);
 	}
 
 	public boolean isConnected() {

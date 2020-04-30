@@ -1,5 +1,7 @@
 package bot.controller;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,7 +23,7 @@ import mV2IL.messages.MsgConfirmBtCon;
 import mV2IL.model.PositionState;
 import mV2IL.model.TraficLightStates;
 
-public class ControllerMBot implements Runnable, Observer {
+public class ControllerMBot implements Runnable, PropertyChangeListener {
 	private MBotModel mBotModel = null;
 	private String rsuIpAdress = "127.0.0.1";
 
@@ -52,7 +54,9 @@ public class ControllerMBot implements Runnable, Observer {
 
 	public void connect() throws IOException, InterruptedException {
 		mBotModel.printMessage("Trying to connect to " + mBotModel.getBluetoothAdress() + "...");
-		bluetoothController.openConnection(mBotModel.getBluetoothAdress(), this);
+		bluetoothController.openConnection(mBotModel.getBluetoothAdress(), e -> {
+			handleJSONfromBot((JsonObject) e.getNewValue());
+		});
 
 		Thread.sleep(2000);
 		bluetoothController.confirmConnection();
@@ -62,7 +66,9 @@ public class ControllerMBot implements Runnable, Observer {
 		boolean connectToLAN = true;
 		while (connectToLAN) {
 			try {
-				controllerLAN.openConnection(rsuIpAdress, this);
+				controllerLAN.openConnection(rsuIpAdress, e -> {
+					handleJSONfromLAN((JsonObject) e.getNewValue());
+				});
 				connectToLAN = false;
 			} catch (IOException e) {
 				mBotModel.printMessage("Found no RSU... trying again..");
@@ -81,7 +87,7 @@ public class ControllerMBot implements Runnable, Observer {
 
 		mBotModel.printMessage("Connection established");
 	}
-
+	
 	public void disconnect() throws IOException {
 		mBotModel.printMessage("Disconnecting...");
 		mBotModel.reset();
@@ -263,74 +269,15 @@ public class ControllerMBot implements Runnable, Observer {
 				setDrivingRSU(drive);
 				break;
 			case "traficLightState":
-				/*TraficLightStates tls = null;
-				int stopLine = 3;
-				int stateValue = jObj.get(key).getAsInt();
-				for (TraficLightStates t : TraficLightStates.values()) {
-					if (stateValue == t.getState()) {
-						tls = t;
-						break;
-					}
-				}
-
-				switch (tls) {
-				case ALL_RED:
-					switch (mBotModel.getCurrentPositionState()) {
-					case POSITION_STATE_ENTER_EAST:
-					case POSITION_STATE_ENTER_NORTH:
-					case POSITION_STATE_ENTER_SOUTH:
-					case POSITION_STATE_ENTER_WEST:
-						if (mBotModel.getCurrentPosition() < stopLine)
-							setDrivingRSU(false);
-						break;
-					default:
-						setDrivingRSU(true);
-						break;
-					}
-					break;
-				case EAST_WEST_GREEN:
-					switch (mBotModel.getCurrentPositionState()) {
-					case POSITION_STATE_ENTER_NORTH:
-					case POSITION_STATE_ENTER_SOUTH:
-						if (mBotModel.getCurrentPosition() < stopLine)
-							setDrivingRSU(false);
-						break;
-					default:
-						setDrivingRSU(true);
-						break;
-					}
-					break;
-				case SOUTH_NORTH_GREEN:
-					switch (mBotModel.getCurrentPositionState()) {
-					case POSITION_STATE_ENTER_EAST:
-					case POSITION_STATE_ENTER_WEST:
-						if (mBotModel.getCurrentPosition() < stopLine)
-							setDrivingRSU(false);
-						break;
-					default:
-						setDrivingRSU(true);
-						break;
-					}
-					break;
-				default:
-					break;
-				}
-				*/
 				break;
 			}
 		}
 	}
-
+	
 	@Override
-	public void update(Observable arg0, Object arg1) {
-		if (arg1 instanceof MessageWithOrigin) {
-			MessageWithOrigin msg = (MessageWithOrigin) arg1;
-			if (bluetoothController.getInputController().equals(msg.origin)) {
-				handleJSONfromBot(msg.message);
-			} else if (controllerLAN.getInputController().equals(msg.origin)) {
-				handleJSONfromLAN(msg.message);
-			}
-		}
+	public void propertyChange(PropertyChangeEvent evt) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override

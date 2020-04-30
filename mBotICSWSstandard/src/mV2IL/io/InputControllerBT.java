@@ -15,29 +15,31 @@ public class InputControllerBT extends InputController {
 	public InputControllerBT(InputStream inputStream, Semaphore connectionConfirmed) {
 		super(inputStream);
 		this.connectionConfirmed = connectionConfirmed;
-	}
+	}	
 
 	@Override
 	public void run() {
 		try {
+			MessageWithOrigin oldMsg = null;
+			MessageWithOrigin msg = null;
 			while (isRunning) {
 				if (inputStream.available() > 0) {
 					int apa = inputStream.read();
 					if (apa == '}') {
 						stringBuilder.append((char) apa);
-						JsonParser p = new JsonParser();
-						MessageWithOrigin msg = new MessageWithOrigin();
-						msg.origin = this;
-						msg.message = p.parse(stringBuilder.toString()).getAsJsonObject();
+						
+						JsonParser p = new JsonParser();						
+						oldMsg = msg;
+						msg = getMsgFromJSON(stringBuilder.toString());
 						
 						if (!connectionTested) {
 							connectionTested = true;
 							connectionConfirmed.release();
 						} else {
-							setChanged();
-							notifyObservers(msg);
+							pcs.firePropertyChange("NewMsg", oldMsg, msg);
 						}
-						stringBuilder = new StringBuilder();
+						
+						stringBuilder = new StringBuilder();						
 					} else {
 						stringBuilder.append((char) apa);
 						if (stringBuilder.length() > 300) {
