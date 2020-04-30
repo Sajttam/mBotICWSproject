@@ -11,6 +11,7 @@ import mV2IL.messages.MessageWithOrigin;
 public class InputControllerBT extends InputController {
 	private Semaphore connectionConfirmed = null;
 	private boolean connectionTested = false;
+	private static final int MAX_MESSAGE_LENGTH = 300;
 
 	public InputControllerBT(InputStream inputStream, Semaphore connectionConfirmed) {
 		super(inputStream);
@@ -27,8 +28,7 @@ public class InputControllerBT extends InputController {
 					int apa = inputStream.read();
 					if (apa == '}') {
 						stringBuilder.append((char) apa);
-						
-						JsonParser p = new JsonParser();						
+										
 						oldMsg = msg;
 						msg = getMsgFromJSON(stringBuilder.toString());
 						
@@ -39,11 +39,11 @@ public class InputControllerBT extends InputController {
 							pcs.firePropertyChange("NewMsg", oldMsg, msg);
 						}
 						
-						stringBuilder = new StringBuilder();						
+						stringBuilder.setLength(0);						
 					} else {
 						stringBuilder.append((char) apa);
-						if (stringBuilder.length() > 300) {
-							System.out.println("error: Message to long! clearingbuffer...");
+						if (stringBuilder.length() > MAX_MESSAGE_LENGTH) {
+							System.out.println("error: Message to long! clearingbuffer... MAX_MESSAGE_LENGTH=" + MAX_MESSAGE_LENGTH);
 							stringBuilder = new StringBuilder();
 						}
 					}

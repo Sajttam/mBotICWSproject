@@ -1,16 +1,10 @@
 package rsu.server;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -21,12 +15,10 @@ import mV2IL.io.Logger;
 import mV2IL.messages.MessageRSUdriving;
 import mV2IL.messages.MessageServer;
 import mV2IL.messages.MessageWithOrigin;
-import mV2IL.model.TraficLightStates;
 import rsu.algorithms.AlgorithmICWS;
 import rsu.algorithms.QueueAlg;
-import rsu.algorithms.TrafficLightAlg;
 
-public class ControllerRSU implements PropertyChangeListener, Runnable {
+public class ControllerRSU implements Runnable {
 	private ServerSocket serverSocket = null;
 	private static final int SERVER_PORT = 6060;
 	private Map<InputController, ControllerLAN> connections = null;
@@ -89,7 +81,7 @@ public class ControllerRSU implements PropertyChangeListener, Runnable {
 			while (isRunning) {
 				Socket clienSocket = serverSocket.accept();
 				ControllerLAN newConnection = new ControllerLAN();
-				newConnection.openConnection(clienSocket, this);
+				newConnection.openConnection(clienSocket, e -> handleJsonFromLAN((MessageWithOrigin) e.getNewValue()));
 				connections.put(newConnection.getInputController(), newConnection);
 				logger.logData("newConnection: " + clienSocket.toString());
 			}
@@ -106,17 +98,5 @@ public class ControllerRSU implements PropertyChangeListener, Runnable {
 		MessageServer msgServer = gson.fromJson(jObj.toString(), MessageServer.class);
 		ControllerLAN cl = connections.get(msgOrigin.origin);
 		CarInIntersection.updateInfo(msgServer, cl);
-	}
-
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		MessageWithOrigin msg = (MessageWithOrigin) evt.getNewValue();
-		for (ControllerLAN c : connections.values()) {
-			//TODO: is this really correct???
-			if (c.getInputController().equals(msg.origin)) {
-				handleJsonFromLAN(msg);
-				break;
-			}
-		}
 	}
 }

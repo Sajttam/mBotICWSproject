@@ -1,29 +1,18 @@
 package bot.controller;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import com.google.gson.JsonObject;
-
 import bot.messages.MessagePing;
 import bot.messages.MessageSetPosition;
 import bot.model.MBotModel;
 import mV2IL.LAN.ControllerLAN;
 import mV2IL.io.BluetoothController;
 import mV2IL.messages.MessageServer;
-import mV2IL.messages.MessageWithOrigin;
-import mV2IL.messages.MsgConfirmBtCon;
 import mV2IL.model.PositionState;
-import mV2IL.model.TraficLightStates;
 
-public class ControllerMBot implements Runnable, PropertyChangeListener {
+public class ControllerMBot implements Runnable {
 	private MBotModel mBotModel = null;
 	private String rsuIpAdress = "127.0.0.1";
 
@@ -275,12 +264,6 @@ public class ControllerMBot implements Runnable, PropertyChangeListener {
 	}
 	
 	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof ControllerMBot) {
 			ControllerMBot other = (ControllerMBot) obj;
@@ -313,7 +296,6 @@ public class ControllerMBot implements Runnable, PropertyChangeListener {
 		if (oldDriving != driving && oldDriving != mBotModel.isAllowedToDrive()) {
 			if (mBotModel.isAllowedToDrive() && driving) {
 				mBotModel.setDriving(true);
-				long currentTime = System.currentTimeMillis();
 				mBotModel.setTimeLastCountedLine(System.currentTimeMillis() - saveTime);
 			} else {
 				saveTime = System.currentTimeMillis() - mBotModel.getTimeLastCountedLine();
@@ -321,14 +303,6 @@ public class ControllerMBot implements Runnable, PropertyChangeListener {
 			}
 
 			bluetoothController.sendMessage(mBotModel.getAsMessage());
-		}
-	}
-
-	public void toggleDriving() {
-		if (mBotModel.isDriving()) {
-			// setDriving(false);
-		} else {
-			// setDriving(true);
 		}
 	}
 

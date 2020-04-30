@@ -3,11 +3,8 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Date;
-import java.util.Observable;
-
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import mV2IL.messages.MessageWithOrigin;
 
@@ -16,6 +13,7 @@ public abstract class InputController implements Runnable {
 	protected StringBuilder stringBuilder;
 	protected boolean isRunning = true;
 	protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+	private Gson gson = new Gson();
 
 	protected InputController(InputStream inputStream) {
 		this.inputStream = inputStream;
@@ -40,14 +38,10 @@ public abstract class InputController implements Runnable {
 	
 	protected MessageWithOrigin getMsgFromJSON(String json) {
 		MessageWithOrigin msg = new MessageWithOrigin();
-		
-		JsonParser p = new JsonParser();
 		msg = new MessageWithOrigin();
 		msg.origin = this;
-		msg.message = p.parse(json).getAsJsonObject();		
-		
-		return msg;
-		
+		msg.message = gson.fromJson(json, JsonObject.class);		
+		return msg;		
 	}
 
 	@Override
@@ -65,7 +59,7 @@ public abstract class InputController implements Runnable {
 						msg = getMsgFromJSON(stringBuilder.toString());
 						pcs.firePropertyChange("NewMsg", oldMsg, msg);
 						
-						stringBuilder = new StringBuilder();
+						stringBuilder.setLength(0);
 					} else {
 						stringBuilder.append((char) apa);
 					}

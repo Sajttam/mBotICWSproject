@@ -49,7 +49,6 @@ public class ControlPanel extends JPanel {
 			}
 			
 			mBotController.setBaseMotorSpeed(speed);
-			mBotController.toggleDriving();
 		});		
 		pingButton.addActionListener(e -> mBotController.pingBot());
 		
@@ -110,7 +109,7 @@ public class ControlPanel extends JPanel {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		driveButton.setEnabled(true);
+		//driveButton.setEnabled(true);
 		disconnectButton.setEnabled(true);
 		pingButton.setEnabled(true);
 		powerButton.setEnabled(true);
