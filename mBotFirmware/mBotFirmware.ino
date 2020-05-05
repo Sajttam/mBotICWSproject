@@ -1,5 +1,3 @@
-
-
 #include <Wire.h>
 #include <SoftwareSerial.h>
 #include "MeMCore.h"
@@ -7,6 +5,7 @@
 #include <Arduino_JSON.h>
 
 int systemStepCounter = 0;
+int MSGSENDINTERVAL = 150;
 int SPEEDUPMSG = 75;
 
 MeRGBLed rgb(0, 16);  /* parameter description: port, slot, led number */
@@ -95,7 +94,7 @@ void loop() {
   lineFollower(); 
   lineCounter();
   ultraSonic();
-  if((systemStepCounter >= 150) && connectedToBT){
+  if((systemStepCounter >= MSGSENDINTERVAL) && connectedToBT){
     sendJsonMSG();
     systemStepCounter = 0;
   }
