@@ -34,6 +34,7 @@ public class TrafficLightAlg extends AlgorithmICWSabstarct implements Runnable {
 		});
 	}
 	
+
 	@Override
 	public boolean isVehicleAllowedToDrive(CarInIntersection cii) {
 		switch (currentTrafficLightState) {

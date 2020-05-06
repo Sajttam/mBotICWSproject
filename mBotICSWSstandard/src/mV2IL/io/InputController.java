@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import mV2IL.messages.MessageWithOrigin;
 
@@ -13,7 +14,6 @@ public abstract class InputController implements Runnable {
 	protected StringBuilder stringBuilder;
 	protected boolean isRunning = true;
 	protected PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-	private Gson gson = new Gson();
 
 	protected InputController(InputStream inputStream) {
 		this.inputStream = inputStream;
@@ -40,7 +40,12 @@ public abstract class InputController implements Runnable {
 		MessageWithOrigin msg = new MessageWithOrigin();
 		msg = new MessageWithOrigin();
 		msg.origin = this;
-		msg.message = gson.fromJson(json, JsonObject.class);		
+		try {
+		msg.message = JsonParser.parseString(json).getAsJsonObject();		
+		}
+		catch (Exception e) {
+			System.out.println(e);
+		}
 		return msg;		
 	}
 

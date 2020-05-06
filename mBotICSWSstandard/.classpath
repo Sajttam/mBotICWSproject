@@ -8,6 +8,8 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="lib" path="C:/Users/matti/OneDrive/Jobb/Chalmers/Exjobb/gson-2.8.6.jar"/>
-	<classpathentry kind="lib" path="C:/Users/matti/OneDrive/Jobb/Chalmers/Exjobb/bluecove-2.1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/matti/OneDrive/Jobb/Chalmers/Exjobb/bluecove-2.1.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="C:/Users/matti/OneDrive/Jobb/Chalmers/Exjobb/bluecove-emu-2.1.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="C:/Users/matti/OneDrive/Jobb/Chalmers/Exjobb/bluecove-gpl-2.1.1-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

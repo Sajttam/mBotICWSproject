@@ -66,19 +66,6 @@ public class QueueAlg extends AlgorithmICWSabstarct implements Runnable {
 		return queue.contains(cii);
 	}
 
-	/*public void witchQueuesFlow() {
-		switch (currentTrafficLightState) {
-		case SOUTH_NORTH_GREEN:
-			if (QUEUE_NORTH_SOUTH.isEmpty() && !QUEUE_EAST_WEST.isEmpty())
-				changeTrafficState();
-			break;
-		case EAST_WEST_GREEN:
-			if (!QUEUE_NORTH_SOUTH.isEmpty() && QUEUE_EAST_WEST.isEmpty())
-				changeTrafficState();
-			break;
-		}
-	}*/
-
 	public void changeTrafficState() {
 		if (!thisThread.isAlive() && INTERSECTION.availablePermits() <= 1) {
 			thisThread = new Thread(this);
@@ -139,6 +126,10 @@ public class QueueAlg extends AlgorithmICWSabstarct implements Runnable {
 			if (QUEUE_NORTH_SOUTH.isEmpty())
 				currentTrafficLightState = TraficLightStates.EAST_WEST_GREEN;
 			break;	
+		default:
+			QUEUE_NORTH_SOUTH.remove(cii);
+			QUEUE_EAST_WEST.remove(cii);
+			break;
 		}		
 		
 		return trafficLight(cii);

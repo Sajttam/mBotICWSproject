@@ -17,6 +17,7 @@ import mV2IL.messages.MessageServer;
 import mV2IL.messages.MessageWithOrigin;
 import rsu.algorithms.AlgorithmICWS;
 import rsu.algorithms.QueueAlg;
+import rsu.algorithms.TrafficLightAlg;
 
 public class ControllerRSU implements Runnable {
 	private ServerSocket serverSocket = null;
@@ -33,6 +34,7 @@ public class ControllerRSU implements Runnable {
 			connections = new HashMap<InputController, ControllerLAN>();
 			isRunning = true;
 			algorithmICWS = new QueueAlg();
+			//algorithmICWS = new TrafficLightAlg();
 
 			CommunicationTimer comTime = new CommunicationTimer();
 			comTime.addPropertyChangeListener(e -> {

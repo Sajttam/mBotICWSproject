@@ -10,6 +10,7 @@ import bot.model.MBotModel;
 import mV2IL.LAN.ControllerLAN;
 import mV2IL.io.BluetoothController;
 import mV2IL.messages.MessageServer;
+import mV2IL.messages.MessageWithOrigin;
 import mV2IL.model.PositionState;
 
 public class ControllerMBot implements Runnable {
@@ -44,7 +45,7 @@ public class ControllerMBot implements Runnable {
 	public void connect() throws IOException, InterruptedException {
 		mBotModel.printMessage("Trying to connect to " + mBotModel.getBluetoothAdress() + "...");
 		bluetoothController.openConnection(mBotModel.getBluetoothAdress(), e -> {
-			handleJSONfromBot((JsonObject) e.getNewValue());
+			handleJSONfromBot(((MessageWithOrigin) e.getNewValue()).message);
 		});
 
 		Thread.sleep(2000);
@@ -56,7 +57,7 @@ public class ControllerMBot implements Runnable {
 		while (connectToLAN) {
 			try {
 				controllerLAN.openConnection(rsuIpAdress, e -> {
-					handleJSONfromLAN((JsonObject) e.getNewValue());
+					handleJSONfromLAN(((MessageWithOrigin) e.getNewValue()).message);
 				});
 				connectToLAN = false;
 			} catch (IOException e) {

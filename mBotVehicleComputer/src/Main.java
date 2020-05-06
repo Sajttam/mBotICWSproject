@@ -48,7 +48,7 @@ public class Main {
 		return map;
 	}
 
-	public static void main(String args[]) {
+	public static void main(String args[]) {		
 		Main m = new Main();
 		printToConsol("__mBot Controller Started__");
 
