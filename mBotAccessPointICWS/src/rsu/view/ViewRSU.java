@@ -16,7 +16,7 @@ import javax.swing.JPanel;
 import mV2IL.model.TraficLightStates;
 import rsu.algorithms.QueueAlg;
 import rsu.algorithms.TrafficLightAlg;
-import rsu.server.CarInIntersection;
+import rsu.server.VehicleInIntersection;
 
 public class ViewRSU extends JPanel implements PropertyChangeListener {
 
@@ -84,8 +84,8 @@ public class ViewRSU extends JPanel implements PropertyChangeListener {
 	}
 
 	public void update(Observable arg0, Object arg1) {
-		if (arg1 instanceof CarInIntersection) {
-			CarInIntersection car = (CarInIntersection) arg1;
+		if (arg1 instanceof VehicleInIntersection) {
+			VehicleInIntersection car = (VehicleInIntersection) arg1;
 			switch (car.getPositionState()) {
 			case POSITION_STATE_ENTER_EAST:
 			case POSITION_STATE_ENTER_WEST:
@@ -153,13 +153,13 @@ public class ViewRSU extends JPanel implements PropertyChangeListener {
 				break;
 			}
 		} else if (arg0.getPropertyName().equals(QueueAlg.EVENT_NAME)) {
-			CarInIntersection car;
+			VehicleInIntersection car;
 			
 			if (arg0.getNewValue() == null) {
-				car = (CarInIntersection) arg0.getOldValue();
+				car = (VehicleInIntersection) arg0.getOldValue();
 			}
 			else {
-				car = (CarInIntersection) arg0.getNewValue();
+				car = (VehicleInIntersection) arg0.getNewValue();
 			}
 			
 			

@@ -39,7 +39,7 @@ public class ControllerRSU implements Runnable {
 			CommunicationTimer comTime = new CommunicationTimer();
 			comTime.addPropertyChangeListener(e -> {
 				for (ControllerLAN cl : connections.values()) {
-					CarInIntersection cii = CarInIntersection.getCarInIntersection(cl);
+					VehicleInIntersection cii = VehicleInIntersection.getCarInIntersection(cl);
 
 					if (cii != null) {
 						boolean drive = algorithmICWS.isVehicleAllowedToDrive(cii);
@@ -99,6 +99,6 @@ public class ControllerRSU implements Runnable {
 		Gson gson = builder.create();
 		MessageServer msgServer = gson.fromJson(jObj.toString(), MessageServer.class);
 		ControllerLAN cl = connections.get(msgOrigin.origin);
-		CarInIntersection.updateInfo(msgServer, cl);
+		VehicleInIntersection.updateInfo(msgServer, cl);
 	}
 }

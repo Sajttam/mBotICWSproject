@@ -3,7 +3,7 @@ package rsu.algorithms;
 import java.io.IOException;
 
 import mV2IL.model.TraficLightStates;
-import rsu.server.CarInIntersection;
+import rsu.server.VehicleInIntersection;
 
 public class TrafficLightAlg extends AlgorithmICWSabstarct implements Runnable {
 	
@@ -36,7 +36,7 @@ public class TrafficLightAlg extends AlgorithmICWSabstarct implements Runnable {
 	
 
 	@Override
-	public boolean isVehicleAllowedToDrive(CarInIntersection cii) {
+	public boolean isVehicleAllowedToDrive(VehicleInIntersection cii) {
 		switch (currentTrafficLightState) {
 		case ALL_RED:
 			switch (cii.getPositionState()) {

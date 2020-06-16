@@ -10,16 +10,16 @@ import mV2IL.io.Logger;
 import mV2IL.messages.MessageServer;
 import mV2IL.model.PositionState;
 
-public class CarInIntersection implements Comparable<Object> {
+public class VehicleInIntersection implements Comparable<Object> {
 	private String name;
 	private PositionState positionState;
 	private int currentPosition;
 	private ControllerLAN controllerLAN;
 	private long infoAge;
-	private static List<CarInIntersection> carsInIntersection = new LinkedList<CarInIntersection>();
+	private static List<VehicleInIntersection> carsInIntersection = new LinkedList<VehicleInIntersection>();
 	private Logger logger = null;
 	
-	private CarInIntersection(MessageServer msg, ControllerLAN controllerLAN) {
+	private VehicleInIntersection(MessageServer msg, ControllerLAN controllerLAN) {
 		try {
 			logger = new Logger("RSU-" + msg.getName());
 		} catch (IOException e) {
@@ -33,8 +33,8 @@ public class CarInIntersection implements Comparable<Object> {
 		setPositionState(msg.getState());
 	}
 	
-	public static CarInIntersection getCarInIntersection(ControllerLAN controllerLAN) {
-		for (CarInIntersection c : carsInIntersection) {
+	public static VehicleInIntersection getCarInIntersection(ControllerLAN controllerLAN) {
+		for (VehicleInIntersection c : carsInIntersection) {
 			if (c.getControllerLAN().equals(controllerLAN)) {
 				return c;
 			}
@@ -42,8 +42,8 @@ public class CarInIntersection implements Comparable<Object> {
 		return null;
 	}
 	
-	public static CarInIntersection updateInfo(MessageServer msg, ControllerLAN controllerLAN) {
-		for (CarInIntersection c : carsInIntersection) {
+	public static VehicleInIntersection updateInfo(MessageServer msg, ControllerLAN controllerLAN) {
+		for (VehicleInIntersection c : carsInIntersection) {
 			if (c.getControllerLAN().equals(controllerLAN)) {
 				
 				c.setName(msg.getName());
@@ -53,7 +53,7 @@ public class CarInIntersection implements Comparable<Object> {
 				return c;
 			}
 		}
-		CarInIntersection c = new CarInIntersection(msg, controllerLAN);
+		VehicleInIntersection c = new VehicleInIntersection(msg, controllerLAN);
 		carsInIntersection.add(c);
 		return c;
 	}
@@ -62,8 +62,8 @@ public class CarInIntersection implements Comparable<Object> {
 	
 	@Override
 	public int compareTo(Object arg0) {
-		if (arg0 instanceof CarInIntersection) {
-			CarInIntersection other = (CarInIntersection) arg0;
+		if (arg0 instanceof VehicleInIntersection) {
+			VehicleInIntersection other = (VehicleInIntersection) arg0;
 			switch (other.getPositionState()) {
 			case POSITION_STATE_ENTER_EAST:
 			case POSITION_STATE_ENTER_WEST:
@@ -87,8 +87,8 @@ public class CarInIntersection implements Comparable<Object> {
 	
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof CarInIntersection) {
-			CarInIntersection other = (CarInIntersection) obj;
+		if (obj instanceof VehicleInIntersection) {
+			VehicleInIntersection other = (VehicleInIntersection) obj;
 			return (other.getName().equals(getName()) && other.getControllerLAN().equals(getControllerLAN()));
 		}
 		return false;

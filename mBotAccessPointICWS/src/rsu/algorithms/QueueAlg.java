@@ -8,11 +8,11 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import mV2IL.model.TraficLightStates;
-import rsu.server.CarInIntersection;
+import rsu.server.VehicleInIntersection;
 
 public class QueueAlg extends AlgorithmICWSabstarct implements Runnable {
-	private final Queue<CarInIntersection> QUEUE_NORTH_SOUTH = new LinkedList<CarInIntersection>();
-	private final Queue<CarInIntersection> QUEUE_EAST_WEST = new LinkedList<CarInIntersection>();
+	private final Queue<VehicleInIntersection> QUEUE_NORTH_SOUTH = new LinkedList<VehicleInIntersection>();
+	private final Queue<VehicleInIntersection> QUEUE_EAST_WEST = new LinkedList<VehicleInIntersection>();
 	private TraficLightStates currentTrafficLightState = TraficLightStates.EAST_WEST_GREEN;
 	private final static int STOP_AT_LINE = 6;
 	public final static String EVENT_NAME = "QueueChanged";
@@ -44,7 +44,7 @@ public class QueueAlg extends AlgorithmICWSabstarct implements Runnable {
 		});
 	}
 
-	public void testQueues(CarInIntersection cii) {
+	public void testQueues(VehicleInIntersection cii) {
 		if (QUEUE_NORTH_SOUTH.contains(cii) && QUEUE_EAST_WEST.contains(cii))
 			try {
 				getLogger().logData("ERROR: " + cii.getName() + " in multiple queues!");
@@ -54,7 +54,7 @@ public class QueueAlg extends AlgorithmICWSabstarct implements Runnable {
 			}
 	}
 
-	public boolean queueVehicle(Queue<CarInIntersection> queue, CarInIntersection cii) {
+	public boolean queueVehicle(Queue<VehicleInIntersection> queue, VehicleInIntersection cii) {
 		if (!queue.contains(cii) && cii.getCurrentPosition() < 22) {
 			queue.add(cii);
 			testQueues(cii);
@@ -73,7 +73,7 @@ public class QueueAlg extends AlgorithmICWSabstarct implements Runnable {
 		}
 	}
 	
-	public boolean trafficLight(CarInIntersection cii) {
+	public boolean trafficLight(VehicleInIntersection cii) {
 		switch (currentTrafficLightState) {
 		case ALL_RED:
 			switch (cii.getPositionState()) {
@@ -109,7 +109,7 @@ public class QueueAlg extends AlgorithmICWSabstarct implements Runnable {
 	}
 
 	@Override
-	public boolean isVehicleAllowedToDrive(CarInIntersection cii) {
+	public boolean isVehicleAllowedToDrive(VehicleInIntersection cii) {
 		
 		switch (cii.getPositionState()) {
 		case POSITION_STATE_ENTER_NORTH:

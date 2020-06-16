@@ -14,7 +14,7 @@ public class Logger {
 	private static final long SYSTEM_START_TIME = System.currentTimeMillis();
 	private static final String LOCATION= "logs" + File.separator;
 	private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm:ss:SSS");
-	private static SimpleDateFormat simpleDateFormatFileName = new SimpleDateFormat("hh.mm.ss");
+	private static SimpleDateFormat simpleDateFormatFileName = new SimpleDateFormat("MMM-dd-hh.mm.ss");
 	
 	public Logger(String owner) throws IOException {
 		this.owner = owner;
@@ -32,7 +32,7 @@ public class Logger {
 	
 	public String logData(String str) throws IOException {				
 		String date = simpleDateFormat.format(new Date(System.currentTimeMillis() - SYSTEM_START_TIME));
-		String msg = date + " [" + owner + "]:\t" + str + "\n";
+		String msg = date + "\t[" + owner + "]:\t" + str + "\n";
 		
 		System.out.print(msg);
 		

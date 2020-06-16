@@ -2,10 +2,10 @@ package rsu.algorithms;
 
 import java.beans.PropertyChangeListener;
 
-import rsu.server.CarInIntersection;
+import rsu.server.VehicleInIntersection;
 
 public interface AlgorithmICWS {
-	public boolean isVehicleAllowedToDrive(CarInIntersection cii);
+	public boolean isVehicleAllowedToDrive(VehicleInIntersection cii);
 	public void addPropertyChangeListener(PropertyChangeListener listener);
 	public void removePropertyChangeListener(PropertyChangeListener listener);
 }

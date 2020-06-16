@@ -67,9 +67,18 @@ public class MBotModel extends Observable {
 	public boolean isAllowedToDrive() {
 		return allowDrivingRSU && allowDrivingUS;
 	}
-
+	
+	long stopTimeValue = -1;
+	long stopTimeSum = 0;
 	public void setAllowDrivingRSU(boolean allowDrivingRSU) {
 		if (allowDrivingRSU != this.allowDrivingRSU) {
+			if (!allowDrivingRSU) {
+				stopTimeValue = System.currentTimeMillis();
+			}
+			else {
+				stopTimeSum += System.currentTimeMillis() - stopTimeValue;
+				printMessage("stopTimeSum [ms] =" + stopTimeSum);
+			}
 			this.allowDrivingRSU = allowDrivingRSU;
 			printMessage("allowDrivingRSU=" + allowDrivingRSU);
 		}

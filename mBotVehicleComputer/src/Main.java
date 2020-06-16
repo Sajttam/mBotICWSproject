@@ -48,7 +48,7 @@ public class Main {
 		return map;
 	}
 
-	public static void main(String args[]) {		
+	public static void main(String args[]) {
 		Main m = new Main();
 		printToConsol("__mBot Controller Started__");
 
@@ -78,41 +78,5 @@ public class Main {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		/*
-		 * Map<String, String> map = null; try { map = m.getBotsFromFile(); } catch
-		 * (IOException e1) { // TODO Auto-generated catch block e1.printStackTrace();
-		 * System.exit(0); }
-		 * 
-		 * StringBuilder s = new StringBuilder(); List<String> list = new
-		 * ArrayList(map.keySet());
-		 * 
-		 * int i = 0; for (String str : list) { s.append("[" + i + "]="); s.append(str +
-		 * ", "); i++; } printToConsol(s);
-		 * 
-		 * Scanner scanner = new Scanner(System.in);
-		 * 
-		 * ControllerMBot mBotController = null;
-		 * 
-		 * while (isRunning) { System.out.print("-> "); String msg = scanner.nextLine();
-		 * printToConsol(msg);
-		 * 
-		 * if (mBotController == null) { try { int selectionValue =
-		 * Integer.parseInt(msg);
-		 * 
-		 * if (selectionValue < 0 || selectionValue >= list.size()) {
-		 * printToConsol("error on input: " + msg); printToConsol(s); } else { try {
-		 * mBotController = new ControllerMBot(list.get(selectionValue), ADRESS_PREFIX +
-		 * map.get(list.get(selectionValue)) + ADRESS_POSTFIX, RSU_IP_ADRESS);
-		 * mBotController.connect(); } catch (IOException e) { // TODO Auto-generated
-		 * catch block e.printStackTrace(); }
-		 * printToConsol("[d=drive, p=ping, ac = set Antoclocwise, c = set Clockwise, baseMotorSpeed = [value]]"
-		 * ); } } catch (NumberFormatException e) { printToConsol("error on input: " +
-		 * msg); printToConsol(s); } } else { switch (msg) { case "d":
-		 * mBotController.toggleDriving(); break; case "p": mBotController.pingBot();
-		 * break; case "ac": mBotController.setClockwise(false); break; case "c":
-		 * mBotController.setClockwise(true); break; default:
-		 * printToConsol("error on input: " + msg); break; } } }
-		 */
 	}
 }

@@ -27,8 +27,24 @@ public class MainPanel extends JPanel {
 		
 		frame.setJMenuBar(new MenuView(this, controller, mBotIntefacePanel, frame));
 		
-		add(new MbotAddPanel(this, controller, mBotIntefacePanel, frame),BorderLayout.WEST);
+		//add(new MbotAddPanel(this, controller, mBotIntefacePanel, frame),BorderLayout.WEST);
 		add(mBotIntefacePanel,BorderLayout.EAST);
+		
+		for (ControllerMBot b : controller.getmBotControllers()) {
+			InformationPanel ip = new InformationPanel();
+			MBotModelDebug deBot = (MBotModelDebug) b.getmBotModel();
+			deBot.addPropertyChangeListener(ip);
+			
+			mBotIntefacePanel.add(ip);
+			mBotIntefacePanel.add(new ControlPanel(b));
+			
+			b.getmBotModel().setRoundTripTime(99999);			
+			String oldName = b.getmBotModel().getBotName();
+			b.getmBotModel().setBotName("");
+			b.getmBotModel().setBotName(oldName);
+			
+			frame.pack();
+		}
 	}
 	
 	public void addBotInteface(String botName, String adressBT, Controller controller, JPanel mBotIntefacePanel,

@@ -104,12 +104,12 @@ public class ControllerMBot implements Runnable {
 	public boolean positionStable(long currentTime) {
 		return (currentTime - mBotModel.getTimeLastCountedLine()) > mBotModel.getTimeBetweenLines();
 	}
-
+	
+	int intersectionPassingNum = 0;
 	public void switchPositionsClockwise(int count) {
 		switch (mBotModel.getCurrentPositionState()) {
-
-		case POSITION_STATE_ENTER_NORTH:
-			mBotModel.setCurrentPositionState(PositionState.POSITION_STATE_EXIT_SOUTH);
+		case POSITION_STATE_ENTER_WEST:
+			mBotModel.setCurrentPositionState(PositionState.POSITION_STATE_EXIT_EAST);
 			break;
 		case POSITION_STATE_ENTER_SOUTH:
 			mBotModel.setCurrentPositionState(PositionState.POSITION_STATE_EXIT_NORTH);
@@ -118,14 +118,13 @@ public class ControllerMBot implements Runnable {
 		case POSITION_STATE_EXIT_EAST:
 			if (count >= 6) { // AT FOUR LINE
 				mBotModel.setCurrentPositionState(PositionState.POSITION_STATE_ENTER_SOUTH);
+				mBotModel.printMessage("intersectionPassingNum: " + ++intersectionPassingNum);
 			}
 		case POSITION_STATE_EXIT_NORTH:
 			if (count > 1 && count < 6) { // AT TWO LINE
 				mBotModel.setCurrentPositionState(PositionState.POSITION_STATE_ENTER_WEST);
+				mBotModel.printMessage("intersectionPassingNum: " + ++intersectionPassingNum);
 			}
-			break;
-		case POSITION_STATE_ENTER_WEST:
-			mBotModel.setCurrentPositionState(PositionState.POSITION_STATE_EXIT_EAST);
 			break;
 		default:
 			break;
@@ -138,21 +137,20 @@ public class ControllerMBot implements Runnable {
 		case POSITION_STATE_ENTER_NORTH:
 			mBotModel.setCurrentPositionState(PositionState.POSITION_STATE_EXIT_SOUTH);
 			break;
-		case POSITION_STATE_ENTER_SOUTH:
-			mBotModel.setCurrentPositionState(PositionState.POSITION_STATE_EXIT_SOUTH);
+		case POSITION_STATE_ENTER_EAST:
+			mBotModel.setCurrentPositionState(PositionState.POSITION_STATE_EXIT_WEST);
 			break;
 		case POSITION_STATE_UNKNOWN:
 		case POSITION_STATE_EXIT_WEST:
 			if (count >= 6) { // AT FOUR LINE
 				mBotModel.setCurrentPositionState(PositionState.POSITION_STATE_ENTER_NORTH);
+				mBotModel.printMessage("intersectionPassingNum: " + ++intersectionPassingNum);
 			}
 		case POSITION_STATE_EXIT_SOUTH:
 			if (count > 1 && count < 6) { // AT TWO LINE
 				mBotModel.setCurrentPositionState(PositionState.POSITION_STATE_ENTER_EAST);
+				mBotModel.printMessage("intersectionPassingNum: " + ++intersectionPassingNum);
 			}
-			break;
-		case POSITION_STATE_ENTER_EAST:
-			mBotModel.setCurrentPositionState(PositionState.POSITION_STATE_EXIT_WEST);
 			break;
 		default:
 			break;

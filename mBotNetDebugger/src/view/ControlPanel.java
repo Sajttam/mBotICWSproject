@@ -82,7 +82,7 @@ public class ControlPanel extends JPanel {
 		//add(slider);
 		add(connectButton);
 		add(disconnectButton);
-		add(driveButton);
+		//add(driveButton);
 		add(clockwiseButton);
 		add(pingButton);
 		add(baseMotorSpeed);
@@ -95,12 +95,13 @@ public class ControlPanel extends JPanel {
 		connectButton.setEnabled(true);
 		powerButton.setEnabled(false);
 		baseMotorSpeed.setEnabled(false);
-		clockwiseButton.setEnabled(false);
+		//clockwiseButton.setEnabled(false);
 		baseMotorSpeed.setText("20");
 	}
 	
 	public void connectoToMBot(ControllerMBot mBotController) {
 		try {
+			mBotController.setClockwise(clockwiseButton.getText().equals(STRING_CLOCKWISE));
 			mBotController.connect();
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
