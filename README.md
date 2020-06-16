@@ -7,7 +7,7 @@ Mattias Sikvall Källström
 
 Eric Rylander
 
-Chalmers University of technology
+Chalmers University of Technology
 
 See quick start_guide on how to open the project in eclipce.
 
