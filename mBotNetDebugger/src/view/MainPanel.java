@@ -11,13 +11,15 @@ import javax.swing.JPanel;
 import bot.controller.ControllerMBot;
 import controller.Controller;
 import modelDebug.MBotModelDebug;
+import rsu.server.ControllerRSU;
+import rsu.view.ViewRSU;
 
 public class MainPanel extends JPanel {
 	public static final String ADRESS_PREFIX = "btspp://";
 	public static final String ADRESS_POSTFIX = ":1;authenticate=false;encrypt=false;master=false";
 	JPanel mBotIntefacePanel;
 	
-	public MainPanel(Controller controller, JFrame frame) throws IOException {
+	public MainPanel(Controller controller, JFrame frame, ViewRSU viewRSU, ControllerRSU controllerRSU) throws IOException {
 		setLayout(new BorderLayout());
 		
 		//Generate container for interface panel (mBot controller)
@@ -25,7 +27,7 @@ public class MainPanel extends JPanel {
 		BoxLayout boxlayout = new BoxLayout(mBotIntefacePanel, BoxLayout.Y_AXIS);
 		mBotIntefacePanel.setLayout(boxlayout);		
 		
-		frame.setJMenuBar(new MenuView(this, controller, mBotIntefacePanel, frame));
+		frame.setJMenuBar(new MenuView(this, controller, mBotIntefacePanel, frame,controllerRSU, viewRSU));
 		
 		//add(new MbotAddPanel(this, controller, mBotIntefacePanel, frame),BorderLayout.WEST);
 		add(mBotIntefacePanel,BorderLayout.EAST);
@@ -47,6 +49,8 @@ public class MainPanel extends JPanel {
 		}
 	}
 	
+
+
 	public void addBotInteface(String botName, String adressBT, Controller controller, JPanel mBotIntefacePanel,
 			JFrame frame) {
 		try {

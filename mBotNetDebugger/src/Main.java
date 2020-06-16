@@ -41,14 +41,12 @@ public class Main {
 			frame.setVisible(true);
 			frame.setLayout(new BorderLayout());
 			frame.setTitle("mBot net debugger");
-
-			JPanel mainPanel = new MainPanel(controller, frame);
-
-			frame.add(mainPanel, BorderLayout.CENTER);
-
 			ViewRSU v = new ViewRSU();
-			frame.add(v, BorderLayout.NORTH);
+			
+			JPanel mainPanel = new MainPanel(controller, frame, v, cRSU);
 
+			frame.add(mainPanel, BorderLayout.CENTER);			
+			frame.add(v, BorderLayout.NORTH);
 			cRSU.getAlgorithmICWS().addPropertyChangeListener(v);
 
 			frame.pack();

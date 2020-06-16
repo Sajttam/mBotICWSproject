@@ -83,55 +83,6 @@ public class ViewRSU extends JPanel implements PropertyChangeListener {
 		add(queueWestEast, BorderLayout.EAST);
 	}
 
-	public void update(Observable arg0, Object arg1) {
-		if (arg1 instanceof VehicleInIntersection) {
-			VehicleInIntersection car = (VehicleInIntersection) arg1;
-			switch (car.getPositionState()) {
-			case POSITION_STATE_ENTER_EAST:
-			case POSITION_STATE_ENTER_WEST:
-				queueWestEast.updateElement(car.getName());
-				repaint();
-				break;
-			case POSITION_STATE_ENTER_NORTH:
-			case POSITION_STATE_ENTER_SOUTH:
-				queueSouthNorth.updateElement(car.getName());
-				repaint();
-				break;
-			default:
-				break;
-			}
-		} else if (arg1 instanceof Boolean) {
-			boolean isSouthNorthActive = ((Boolean) arg1).booleanValue();
-			if (isSouthNorthActive) {
-				queueSouthNorth.updateHeading(SN_TEXT, true);
-				queueWestEast.updateHeading(WE_TEXT, false);
-			} else {
-				queueSouthNorth.updateHeading(SN_TEXT, false);
-				queueWestEast.updateHeading(WE_TEXT, true);
-			}
-		} else if (arg1 instanceof TraficLightStates) {
-			TraficLightStates tl = (TraficLightStates) arg1;
-
-			switch (tl) {
-			case ALL_RED:
-				queueSouthNorth.updateHeading(SN_TEXT, false);
-				queueWestEast.updateHeading(WE_TEXT, false);
-				break;
-			case EAST_WEST_GREEN:
-				queueSouthNorth.updateHeading(SN_TEXT, false);
-				queueWestEast.updateHeading(WE_TEXT, true);
-				break;
-			case SOUTH_NORTH_GREEN:
-				queueSouthNorth.updateHeading(SN_TEXT, true);
-				queueWestEast.updateHeading(WE_TEXT, false);
-				break;
-			default:
-				break;
-			}
-
-		}
-	}
-
 	@Override
 	public void propertyChange(PropertyChangeEvent arg0) {
 		if (arg0.getPropertyName().equals(TrafficLightAlg.EVENT_NAME)) {

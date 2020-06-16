@@ -10,6 +10,10 @@ import javax.swing.JPanel;
 
 import bot.controller.ControllerMBot;
 import controller.Controller;
+import rsu.algorithms.QueueAlg;
+import rsu.algorithms.TrafficLightAlg;
+import rsu.server.ControllerRSU;
+import rsu.view.ViewRSU;
 
 public class MenuView extends JMenuBar {
 
@@ -18,20 +22,26 @@ public class MenuView extends JMenuBar {
 	private static final String ADRESS_LAG_2 = "000D19124CC0";
 	
 
-	public MenuView(MainPanel parent, Controller controller, JPanel mBotIntefacePanel, JFrame frame) {
-		JMenu mBotMenu = new JMenu("mBot");
+	public MenuView(MainPanel parent, Controller controller, JPanel mBotIntefacePanel, JFrame frame,ControllerRSU controllerRSU, ViewRSU viewRSU) {
+		JMenu mBotMenu = new JMenu("Menu");
 		
 		JMenuItem itemConnectAll = new JMenuItem("Connect All");
 		JMenuItem itemDriveAll = new JMenuItem("Drive All");
 		JMenuItem itemSetTeam0 = new JMenuItem("Add bot 0, CARolus");
 		JMenuItem itemSetTeam1 = new JMenuItem("Add bot 1, CARolin");
 		JMenuItem itemSetTeam2 = new JMenuItem("Add bot 2, CARlos");
-
+		JMenuItem itemSetTLA = new JMenuItem("Set Trafficlight alg.");
+		JMenuItem itemSetQA = new JMenuItem("Set Queue alg.");
+		
 		// itemDrive.addActionListener(e -> controller.toggleDriving());
 		
 		itemConnectAll.addActionListener(e -> parent.connectAllBots());
 		itemDriveAll.addActionListener(e -> parent.driveAllBots());
-
+		
+		itemSetTLA.addActionListener(e -> controllerRSU.setAlgorithmICWS(new TrafficLightAlg(), viewRSU));
+		itemSetQA.addActionListener(e -> controllerRSU.setAlgorithmICWS(new QueueAlg(), viewRSU));
+		
+		
 		itemSetTeam0.addActionListener(e -> {
 			parent.addBotInteface("CARolus(0)", ADRESS_LAG_0, controller, mBotIntefacePanel, frame);
 		});
@@ -45,7 +55,9 @@ public class MenuView extends JMenuBar {
 		});
 
 		mBotMenu.add(itemConnectAll);
-		mBotMenu.add(itemDriveAll);
+		//mBotMenu.add(itemDriveAll);
+		mBotMenu.add(itemSetTLA);
+		mBotMenu.add(itemSetQA);
 		//mBotMenu.add(itemSetTeam0);
 		//mBotMenu.add(itemSetTeam1);
 		//mBotMenu.add(itemSetTeam2);

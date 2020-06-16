@@ -18,6 +18,7 @@ import mV2IL.messages.MessageWithOrigin;
 import rsu.algorithms.AlgorithmICWS;
 import rsu.algorithms.QueueAlg;
 import rsu.algorithms.TrafficLightAlg;
+import rsu.view.ViewRSU;
 
 public class ControllerRSU implements Runnable {
 	private ServerSocket serverSocket = null;
@@ -33,7 +34,7 @@ public class ControllerRSU implements Runnable {
 			serverSocket = new ServerSocket(SERVER_PORT);
 			connections = new HashMap<InputController, ControllerLAN>();
 			isRunning = true;
-			algorithmICWS = new QueueAlg();
+			setAlgorithmICWS(new QueueAlg());
 			//algorithmICWS = new TrafficLightAlg();
 
 			CommunicationTimer comTime = new CommunicationTimer();
@@ -56,7 +57,7 @@ public class ControllerRSU implements Runnable {
 			System.exit(0);
 		}
 	}
-
+	
 	public void stop() {
 		try {
 			for (ControllerLAN c : connections.values()) {
@@ -74,7 +75,17 @@ public class ControllerRSU implements Runnable {
 	}
 
 	public void setAlgorithmICWS(AlgorithmICWS algorithmICWS) {
+		if (this.algorithmICWS != null) {
+			this.algorithmICWS.close();
+			
+		}
 		this.algorithmICWS = algorithmICWS;
+	}
+	
+	public void setAlgorithmICWS(AlgorithmICWS algorithmICWS, ViewRSU viewRSU) {
+		if (this.algorithmICWS != null) this.algorithmICWS.removePropertyChangeListener(viewRSU);
+		setAlgorithmICWS(algorithmICWS);		
+		this.algorithmICWS.addPropertyChangeListener(viewRSU);
 	}
 
 	@Override

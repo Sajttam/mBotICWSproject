@@ -8,4 +8,5 @@ public interface AlgorithmICWS {
 	public boolean isVehicleAllowedToDrive(VehicleInIntersection cii);
 	public void addPropertyChangeListener(PropertyChangeListener listener);
 	public void removePropertyChangeListener(PropertyChangeListener listener);
+	public void close();
 }

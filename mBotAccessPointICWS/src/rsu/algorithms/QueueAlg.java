@@ -10,21 +10,17 @@ import java.util.concurrent.locks.ReentrantLock;
 import mV2IL.model.TraficLightStates;
 import rsu.server.VehicleInIntersection;
 
-public class QueueAlg extends AlgorithmICWSabstarct implements Runnable {
+public class QueueAlg extends AlgorithmICWSabstarct {
 	private final Queue<VehicleInIntersection> QUEUE_NORTH_SOUTH = new LinkedList<VehicleInIntersection>();
 	private final Queue<VehicleInIntersection> QUEUE_EAST_WEST = new LinkedList<VehicleInIntersection>();
 	private TraficLightStates currentTrafficLightState = TraficLightStates.EAST_WEST_GREEN;
 	private final static int STOP_AT_LINE = 6;
 	public final static String EVENT_NAME = "QueueChanged";
 	private final static long TRAFFIC_SWITCH_DELAY = 750;
-	private Thread thisThread;
-	private final static Semaphore INTERSECTION = new Semaphore(1);
-	private final static Lock LOCK = new ReentrantLock();
 
 	public QueueAlg() {
 		try {
 			setLogger("QueueAlg");
-			thisThread = new Thread(this);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -64,13 +60,6 @@ public class QueueAlg extends AlgorithmICWSabstarct implements Runnable {
 			pcs.firePropertyChange(EVENT_NAME, cii, null);
 		}
 		return queue.contains(cii);
-	}
-
-	public void changeTrafficState() {
-		if (!thisThread.isAlive() && INTERSECTION.availablePermits() <= 1) {
-			thisThread = new Thread(this);
-			thisThread.start();
-		}
 	}
 	
 	public boolean trafficLight(VehicleInIntersection cii) {
@@ -144,13 +133,8 @@ public class QueueAlg extends AlgorithmICWSabstarct implements Runnable {
 	}
 
 	@Override
-	public void run() {
-		try {
-			Thread.sleep(TRAFFIC_SWITCH_DELAY);
-			INTERSECTION.release();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public void close() {
+		// TODO Auto-generated method stub
+		
 	}
 }
