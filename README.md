@@ -2,6 +2,7 @@ Vehicle Communication:
 A study of vehicle communication in a modeled environment
 
 Bachelor’s thesis in Computer Science and Engineering
+
 Mattias Sikvall Källström
 Eric Rylander
 
